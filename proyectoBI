@@ -1,0 +1,83 @@
+CREATE TABLE dim_sede (
+    sk_sede numeric PRIMARY KEY,
+    cod_pais numeric,
+    nb_pais varchar(100),
+    cod_sede numeric,
+    nb_sede varchar(100)
+)
+
+CREATE TABLE dim_leyenda (
+    sk_leyenda numeric PRIMARY KEY,
+    cod_leyenda numeric,
+    nb_leyenda varchar(100)
+)
+
+CREATE TABLE dim_visitante (
+    sk_visitante numeric PRIMARY KEY,
+    cod_visitante numeric,
+    cedula numeric,
+    nb_visiante varchar(100),
+    sexo varchar(100),
+    email varchar(100)
+)
+
+CREATE TABLE dim_tiempo (
+    sk_tiempo numeric PRIMARY KEY,
+    cod_anio numeric,
+    cod_trimestre numeric,
+    desc_trimestre varchar(100),
+    cod_mes numeric,
+    desc_mes varchar(20),
+    desc_mes_corta varchar(20),
+    cod_semana numeric,
+    cod_dia_anio numeric,
+    cod_dia_mes numeric,
+    cod_dia_semana numeric,
+    desc_dia_semana varchar(20)
+    fecha date
+)
+
+CREATE TABLE dim_cliente (
+    sk_cliente numeric PRIMARY KEY,
+    cod_cliente numeric,
+    ci_rif varchar(100),
+    nb_cliente varchar(100),
+    telefono varchar(100),
+    direccion varchar(200),
+    email varchar(100)
+)
+
+CREATE TABLE dim_categoria (
+    sk_categoria numeric PRIMARY KEY,
+    cod_subcategoria numeric,
+    nb_subcategoria varchar(100),
+    cod_categoria numeric,
+    nb_categoria varchar(100)
+)
+
+CREATE TABLE dim_evento (
+    sk_evento numeric PRIMARY KEY,
+    cod_tipo_evento numeric,
+    nb_tipo_evento varchar(100),
+    cod_evento numeric,
+    nb_evento varchar(100),
+    descripcion varchar(200)
+)
+
+CREATE TABLE dim_tipo_stand (
+    sk_tipo_stand numeric PRIMARY KEY,
+    cod_tipo_stand numeric,
+    nb_tipo_stand varchar(100)
+)
+
+create table fact_evento_stand(
+    sk_evento numeric,
+    sk_tipo_stand numeric,
+    cantidad_estimada numeric,
+    mt2 numeric(10,4),
+    precio numeric(10,4),
+    
+    PRIMARY KEY (sk_evento, sk_tipo_stand),
+    FOREIGN KEY (sk_evento) REFERENCES dim_evento(sk_evento),
+    FOREIGN KEY (sk_tipo_stand) REFERENCES dim_tipo_stand(sk_tipo_stand)
+)
