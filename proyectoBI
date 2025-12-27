@@ -4,13 +4,13 @@ CREATE TABLE dim_sede (
     nb_pais varchar(100),
     cod_sede numeric,
     nb_sede varchar(100)
-)
+);
 
 CREATE TABLE dim_leyenda (
     sk_leyenda numeric PRIMARY KEY,
     cod_leyenda numeric,
     nb_leyenda varchar(100)
-)
+);
 
 CREATE TABLE dim_visitante (
     sk_visitante numeric PRIMARY KEY,
@@ -19,7 +19,7 @@ CREATE TABLE dim_visitante (
     nb_visiante varchar(100),
     sexo varchar(100),
     email varchar(100)
-)
+);
 
 CREATE TABLE dim_tiempo (
     sk_tiempo numeric PRIMARY KEY,
@@ -33,9 +33,9 @@ CREATE TABLE dim_tiempo (
     cod_dia_anio numeric,
     cod_dia_mes numeric,
     cod_dia_semana numeric,
-    desc_dia_semana varchar(20)
+    desc_dia_semana varchar(20),
     fecha date
-)
+);
 
 CREATE TABLE dim_cliente (
     sk_cliente numeric PRIMARY KEY,
@@ -45,7 +45,7 @@ CREATE TABLE dim_cliente (
     telefono varchar(100),
     direccion varchar(200),
     email varchar(100)
-)
+);
 
 CREATE TABLE dim_categoria (
     sk_categoria numeric PRIMARY KEY,
@@ -53,7 +53,7 @@ CREATE TABLE dim_categoria (
     nb_subcategoria varchar(100),
     cod_categoria numeric,
     nb_categoria varchar(100)
-)
+);
 
 CREATE TABLE dim_evento (
     sk_evento numeric PRIMARY KEY,
@@ -62,15 +62,15 @@ CREATE TABLE dim_evento (
     cod_evento numeric,
     nb_evento varchar(100),
     descripcion varchar(200)
-)
+);
 
 CREATE TABLE dim_tipo_stand (
     sk_tipo_stand numeric PRIMARY KEY,
     cod_tipo_stand numeric,
     nb_tipo_stand varchar(100)
-)
+);
 
-create table fact_evento_stand(
+CREATE TABLE  fact_evento_stand(
     sk_evento numeric,
     sk_tipo_stand numeric,
     cantidad_estimada numeric,
@@ -80,4 +80,56 @@ create table fact_evento_stand(
     PRIMARY KEY (sk_evento, sk_tipo_stand),
     FOREIGN KEY (sk_evento) REFERENCES dim_evento(sk_evento),
     FOREIGN KEY (sk_tipo_stand) REFERENCES dim_tipo_stand(sk_tipo_stand)
-)
+);
+
+CREATE TABLE fact_alquiler(
+    sk_evento numeric,
+    sk_cliente numeric,
+    sk_fecha_alquiler numeric,
+	sk_tipo_stand numeric,
+    sk_categoria numeric,
+    num_contrato numeric,
+    num_stand numeric,
+    mt2 numeric(10,4),
+    monto numeric(10,4),
+    cantidad numeric,
+
+    PRIMARY KEY (sk_evento, sk_cliente, sk_fecha_alquiler, sk_tipo_stand, sk_categoria, num_contrato, num_stand),
+    FOREIGN KEY (sk_evento) REFERENCES dim_evento(sk_evento),
+    FOREIGN KEY (sk_cliente) REFERENCES dim_cliente(sk_cliente),
+    FOREIGN KEY (sk_fecha_alquiler) REFERENCES dim_tiempo(sk_tiempo),
+    FOREIGN KEY (sk_tipo_stand) REFERENCES dim_tipo_stand(sk_tipo_stand),
+    FOREIGN KEY (sk_categoria) REFERENCES dim_categoria(sk_categoria)
+);
+CREATE TABLE fact_evento (
+    sk_evento numeric,
+    sk_sede numeric,
+    sk_fecha_evento numeric,
+    cantidad_evento numeric,
+    cantidad_estimada_visitantes numeric,
+    meta_ingresos numeric(10,4),
+
+    PRIMARY KEY (sk_evento, sk_sede, sk_fecha_evento),
+    FOREIGN KEY (sk_evento) REFERENCES dim_evento(sk_evento),
+    FOREIGN KEY (sk_sede) REFERENCES dim_sede(sk_sede),
+    FOREIGN KEY (sk_fecha_evento) REFERENCES dim_tiempo(sk_tiempo)
+);
+
+CREATE TABLE fact_visita (
+    sk_evento numeric,
+    sk_visitante numeric,
+    sk_fecha_entrada numeric,
+    sk_leyenda_estrellas numeric,
+    num_entrada numeric,
+    hora_entrada timestamp,
+    cantidad_visitas numeric,
+    calificacion_evento varchar(100),
+    recomienda_amigo varchar(100),
+
+    PRIMARY KEY (sk_evento, sk_visitante, sk_fecha_entrada, sk_leyenda_estrellas, num_entrada),
+
+    FOREIGN KEY (sk_evento) REFERENCES dim_evento(sk_evento),
+    FOREIGN KEY (sk_visitante) REFERENCES dim_visitante(sk_visitante),
+    FOREIGN KEY (sk_leyenda_estrellas) REFERENCES dim_leyenda(sk_leyenda),
+    FOREIGN KEY (sk_fecha_entrada) REFERENCES dim_tiempo(sk_tiempo)
+);
